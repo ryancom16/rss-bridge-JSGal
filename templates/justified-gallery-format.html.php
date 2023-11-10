@@ -39,23 +39,34 @@
             <?php endforeach; ?>
         </div>
     </div>
-    
-    <!-- Justified Gallery -->
-    <div id="justified-gallery">
-        <?php foreach ($items as $item) : ?>
-            <?php foreach ($item['galleryItems'] as $galleryItem) : ?>
-                <a href="<?= htmlspecialchars($galleryItem['url'], ENT_QUOTES, 'UTF-8') ?>" class="gallery-item">
-                    <img src="<?= htmlspecialchars($galleryItem['thumbnail'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') ?>">
-                </a>
-            <?php endforeach; ?>
-        <?php endforeach; ?>
+
+    <!-- Modified Justified Gallery -->
+    <?php foreach ($items as $index => $item) : ?>
+        <div class="item-container">
+            <?php if ($item['title']) : ?>
+                <section class="feeditem">
+                    <h2><?= htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') ?></h2>
+                </section>
+            <?php endif; ?>
+            <div id="justified-gallery-<?= $index ?>" class="justified-gallery">
+                <?php foreach ($item['galleryItems'] as $galleryItem) : ?>
+                    <a href="<?= htmlspecialchars($galleryItem['url'], ENT_QUOTES, 'UTF-8') ?>" class="gallery-item">
+                        <img src="<?= htmlspecialchars($galleryItem['thumbnail'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') ?>">
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
     </div>
     <script>
         $(document).ready(function() {
-            $('#justified-gallery').justifiedGallery({
-                rowHeight: 200,
-                lastRow: 'nojustify',
-                margins: 3
+            $('.justified-gallery').each(function() {
+                $(this).justifiedGallery({
+                    rowHeight: 300,
+                    lastRow: 'nojustify',
+                    margins: 3
+                });
             });
         });
     </script>

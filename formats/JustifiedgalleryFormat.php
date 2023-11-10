@@ -13,11 +13,24 @@ class JustifiedgalleryFormat extends FormatAbstract
         $buttons = [];
         $linkTags = [];
         foreach ($formatFactory->getFormatNames() as $format) {
-            // Dynamically build buttons for all formats (except HTML)
-            if ($format === 'Jgal') {
+            // Dynamically build buttons for all formats (except Justifiedgallery)
+            if ($format === 'Justifiedgallery') {
                 continue;
             }
-            $formatUrl = '?' . str_ireplace('format=Html', 'format=' . $format, htmlentities($queryString));
+
+            // Parse the query string into an associative array
+            parse_str($queryString, $queryParams);
+
+            // Update the 'format' parameter and remove 'groupImages'
+            $queryParams['format'] = $format;
+            unset($queryParams['groupImages']);
+
+            // Rebuild the query string with modifications
+            $queryString = http_build_query($queryParams);
+
+            // Create the format URL
+            $formatUrl = '?' . $queryString;
+
             $buttons[] = [
                 'href' => $formatUrl,
                 'value' => $format,
@@ -36,7 +49,17 @@ class JustifiedgalleryFormat extends FormatAbstract
             ];
         }
 
+
+        // Default behavior is to group by item
+        $groupImagesBy = 'all'; // Possible values: 'item', 'all'
+
+        // Check if the 'groupImages' parameter is set in the URL
+        if (isset($_GET['groupImages'])) {
+            $groupImagesBy = $_GET['groupImages'] === 'all' ? 'all' : 'item';
+        }
+
         $items = [];
+        $allGalleryItems = [];
         foreach ($this->getItems() as $item) {
             $galleryItems = [];
 
@@ -65,16 +88,31 @@ class JustifiedgalleryFormat extends FormatAbstract
                     ];
                 }
             }
+            //error_log("Title: " . $item->getTitle(), 3, "debug.log");
+            if ($groupImagesBy === 'all') {
+                // If grouping all images, collect them in a single array
+                //error_log("Merging gallery items, count: " . count($galleryItems), 3, "debug.log");
+                $allGalleryItems = array_merge($allGalleryItems, $galleryItems);
+                //error_log("After merging, allGalleryItems count: " . count($allGalleryItems), 3, "debug.log");
+            } else {
+                $items[] = [
+                    'url'           => $item->getURI() ?: $extraInfos['uri'],
+                    'title'         => $item->getTitle() ?? '(no title)',
+                    'timestamp'     => $item->getTimestamp(),
+                    'author'        => $item->getAuthor(),
+                    'content'       => $item->getContent() ?? '',
+                    'enclosures'    => $item->getEnclosures(),
+                    'categories'    => $item->getCategories(),
+                    'galleryItems'  => $galleryItems,
+                ];
+            }
+        }
 
-            $items[] = [
-                'url'           => $item->getURI() ?: $extraInfos['uri'],
-                'title'         => $item->getTitle() ?? '(no title)',
-                'timestamp'     => $item->getTimestamp(),
-                'author'        => $item->getAuthor(),
-                'content'       => $item->getContent() ?? '',
-                'enclosures'    => $item->getEnclosures(),
-                'categories'    => $item->getCategories(),
-                'galleryItems'  => $galleryItems,
+        if ($groupImagesBy === 'all') {
+            $items = [
+                [
+                    'galleryItems'  => $allGalleryItems,
+                ]
             ];
         }
 
