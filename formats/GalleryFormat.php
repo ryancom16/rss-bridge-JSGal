@@ -1,6 +1,6 @@
 <?php
 
-class JustifiedgalleryFormat extends FormatAbstract
+class GalleryFormat extends FormatAbstract
 {
     const MIME_TYPE = 'text/html';
 
@@ -14,7 +14,7 @@ class JustifiedgalleryFormat extends FormatAbstract
         $linkTags = [];
         foreach ($formatFactory->getFormatNames() as $format) {
             // Dynamically build buttons for all formats (except Justifiedgallery)
-            if ($format === 'Justifiedgallery') {
+            if ($format === 'Gallery') {
                 continue;
             }
 
@@ -55,7 +55,7 @@ class JustifiedgalleryFormat extends FormatAbstract
 
         // Check if the 'groupImages' parameter is set in the URL
         if (isset($_GET['groupImages'])) {
-            $groupImagesBy = $_GET['groupImages'] === 'all' ? 'all' : 'item';
+            $groupImagesBy = $_GET['groupImages'] === 'item' ? 'item' : 'all';
         }
 
         $items = [];
@@ -116,7 +116,7 @@ class JustifiedgalleryFormat extends FormatAbstract
             ];
         }
 
-        $html = render_template(__DIR__ . '/../templates/justified-gallery-format.html.php', [
+        $html = render_template(__DIR__ . '/../templates/gallery-format.html.php', [
             'charset'   => $this->getCharset(),
             'title'     => $extraInfos['name'],
             'linkTags'  => $linkTags,

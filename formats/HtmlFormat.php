@@ -17,7 +17,7 @@ class HtmlFormat extends FormatAbstract
             if ($format === 'Html') {
                 continue;
             }
-            if ($format === 'Justifiedgallery') {
+            if ($format === 'Gallery') {
                 $queryString = $queryString . '&groupImages=all';
             }
             $formatUrl = '?' . str_ireplace('format=Html', 'format=' . $format, htmlentities($queryString));

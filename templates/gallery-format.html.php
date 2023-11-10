@@ -40,12 +40,14 @@
         </div>
     </div>
 
-    <!-- Modified Justified Gallery -->
+    <!--Justified Gallery -->
     <?php foreach ($items as $index => $item) : ?>
         <div class="item-container">
             <?php if ($item['title']) : ?>
                 <section class="feeditem">
-                    <h2><?= htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') ?></h2>
+                    <h2>
+                        <a class="itemtitle" href="<?= e($item['url']) ?>"><?= strip_tags($item['title']) ?></a>
+                    </h2>
                 </section>
             <?php endif; ?>
             <div id="justified-gallery-<?= $index ?>" class="justified-gallery">
