@@ -65,7 +65,7 @@
         $(document).ready(function() {
             $('.justified-gallery').each(function() {
                 $(this).justifiedGallery({
-                    rowHeight: 300,
+                    rowHeight: <?= htmlspecialchars($gallerySize, ENT_QUOTES, 'UTF-8') ?>,
                     lastRow: 'nojustify',
                     margins: 3
                 });

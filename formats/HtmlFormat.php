@@ -17,10 +17,25 @@ class HtmlFormat extends FormatAbstract
             if ($format === 'Html') {
                 continue;
             }
+
+            // Parse the query string into an associative array
+            parse_str($queryString, $queryParams);
+
+            // Update the 'format' parameter
+            $queryParams['format'] = $format;
+
+            // Add 'galleryGrouping' and 'gallerySize' parameters for Gallery format
             if ($format === 'Gallery') {
-                $queryString = $queryString . '&groupImages=all';
+                $queryParams['galleryGroupImages'] = 'true';
+                $queryParams['gallerySize'] = 300;
             }
-            $formatUrl = '?' . str_ireplace('format=Html', 'format=' . $format, htmlentities($queryString));
+
+            // Rebuild the query string with modifications
+            $modifiedQueryString  = http_build_query($queryParams);
+
+            // Create the format URL
+            $formatUrl = '?' . $modifiedQueryString;
+
             $buttons[] = [
                 'href' => $formatUrl,
                 'value' => $format,
